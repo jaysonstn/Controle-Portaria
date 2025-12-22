@@ -1,5 +1,8 @@
 # Projeto Controle de Portaria
 
+![Tela Controle de Portaria](./Controle-Portaria.png)
+
+
 ### Getting Started
 
 
