@@ -239,7 +239,7 @@ root.setTop(topBox);
 
     TextField tfId = new TextField();
     tfId.setPrefWidth(250);
-    tfId.setPromptText("Ex: ABC-1234 ou 00123");
+    tfId.setPromptText("Ex: 00123 ou ABC-1234");
 
     Label lblNome = new Label("Nome / Modelo:");
     lblNome.setFont(new Font(16));
