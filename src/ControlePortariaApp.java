@@ -12,6 +12,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 
 
 public class ControlePortariaApp extends Application {
@@ -30,12 +32,31 @@ public class ControlePortariaApp extends Application {
         root.setStyle("-fx-background-color: #2C3E50;"); // Dark mode
 
         // Título
-        Label titulo = new Label("Controle de Acesso de Portaria");
-        titulo.setFont(new Font("Arial", 24));
-        titulo.setTextFill(Color.WHITE);
-        titulo.setPadding(new Insets(10));
-        root.setTop(titulo);
-        BorderPane.setAlignment(titulo, Pos.CENTER);
+        // Topo com Logo + Título alinhado à esquerda
+        HBox topBox = new HBox(15);  // 15 de espaçamento entre logo e título
+        topBox.setAlignment(Pos.CENTER_LEFT);  // Alinha tudo à esquerda
+        topBox.setPadding(new Insets(20, 20, 20, 30));  // top, right, bottom, left (mais espaço à esquerda)
+        topBox.setStyle("-fx-background-color: #2C3E50;");
+
+        // Logo
+        try {
+        Image logo = new Image("file:Logo.png");  // Caminho relativo à raiz do projeto
+        ImageView imageView = new ImageView(logo);
+        imageView.setFitWidth(100);    // Tamanho menor para caber bem à esquerda
+        imageView.setFitHeight(100);
+        imageView.setPreserveRatio(true);
+        topBox.getChildren().add(imageView);
+        } catch (Exception e) {
+        System.out.println("Logo não encontrada. Coloque logo.png na raiz do projeto.");
+    }
+
+// Título
+Label titulo = new Label("Controle de Acesso de Portaria");
+titulo.setFont(new Font("Arial Bold", 28));
+titulo.setTextFill(Color.WHITE);
+topBox.getChildren().add(titulo);
+
+root.setTop(topBox);
 
         // Abas para navegação
         TabPane tabPane = new TabPane();
