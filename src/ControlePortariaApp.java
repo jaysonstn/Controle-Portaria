@@ -213,49 +213,72 @@ root.setTop(topBox);
 }
 
     private GridPane criarGridAcoes() {
-        GridPane grid = new GridPane();
-        grid.setStyle("-fx-background-color: #34495E;");
+    GridPane grid = new GridPane();
+    grid.setHgap(15);
+    grid.setVgap(20);
+    grid.setPadding(new Insets(30));
+    grid.setAlignment(Pos.CENTER);
 
-        // Campos comuns
-        Label lblTipo = new Label("Tipo:");
-        lblTipo.setTextFill(Color.WHITE);
-        ComboBox<String> cbTipo = new ComboBox<>(FXCollections.observableArrayList("Veículo", "Colaborador"));
-        cbTipo.setValue("Veículo");
+    // Título da aba
+    Label tituloAcoes = new Label("Registrar Acesso");
+    tituloAcoes.setFont(new Font("Arial Bold", 24));
+    tituloAcoes.setTextFill(Color.WHITE);  // Força branco
+    grid.add(tituloAcoes, 0, 0, 2, 1);
 
-        Label lblId = new Label("ID/Placa:");
-        lblId.setTextFill(Color.WHITE);
-        TextField tfId = new TextField();
+    Label lblTipo = new Label("Tipo:");
+    lblTipo.setFont(new Font(16));
+    lblTipo.setTextFill(Color.WHITE);  // Branco
 
-        Label lblNome = new Label("Nome/Modelo:");
-        lblNome.setTextFill(Color.WHITE);
-        TextField tfNome = new TextField();
+    ComboBox<String> cbTipo = new ComboBox<>(FXCollections.observableArrayList("Veículo", "Colaborador"));
+    cbTipo.setValue("Veículo");
+    cbTipo.setPrefWidth(250);
 
-        // Botões de ações
-        Button btnEntrada = new Button("Registrar Entrada");
-        btnEntrada.setStyle("-fx-background-color: #27AE60; -fx-text-fill: white;");
-        btnEntrada.setOnAction(e -> registrarAcesso(cbTipo.getValue(), tfId.getText(), tfNome.getText(), "Entrada"));
+    Label lblId = new Label("ID / Placa:");
+    lblId.setFont(new Font(16));
+    lblId.setTextFill(Color.WHITE);
 
-        Button btnSaida = new Button("Registrar Saída");
-        btnSaida.setStyle("-fx-background-color: #E67E22; -fx-text-fill: white;");
-        btnSaida.setOnAction(e -> registrarAcesso(cbTipo.getValue(), tfId.getText(), tfNome.getText(), "Saída"));
+    TextField tfId = new TextField();
+    tfId.setPrefWidth(250);
+    tfId.setPromptText("Ex: ABC-1234 ou 00123");
 
-        Button btnBloquear = new Button("Bloquear");
-        btnBloquear.setStyle("-fx-background-color: #E74C3C; -fx-text-fill: white;");
-        btnBloquear.setOnAction(e -> bloquear(tfId.getText()));
+    Label lblNome = new Label("Nome / Modelo:");
+    lblNome.setFont(new Font(16));
+    lblNome.setTextFill(Color.WHITE);
 
-        // Posicionamento
-        grid.add(lblTipo, 0, 0);
-        grid.add(cbTipo, 1, 0);
-        grid.add(lblId, 0, 1);
-        grid.add(tfId, 1, 1);
-        grid.add(lblNome, 0, 2);
-        grid.add(tfNome, 1, 2);
-        grid.add(btnEntrada, 0, 3);
-        grid.add(btnSaida, 1, 3);
-        grid.add(btnBloquear, 0, 4, 2, 1);
+    TextField tfNome = new TextField();
+    tfNome.setPrefWidth(250);
+    tfNome.setPromptText("Ex: João Silva ou Gol Prata");
 
-        return grid;
-    }
+    // Botões
+    Button btnEntrada = new Button("Registrar Entrada");
+    btnEntrada.setStyle("-fx-background-color: #27AE60; -fx-text-fill: white; -fx-font-size: 16; -fx-padding: 12 30; -fx-background-radius: 8;");
+    btnEntrada.setPrefWidth(250);
+    btnEntrada.setOnAction(e -> registrarAcesso(cbTipo.getValue(), tfId.getText(), tfNome.getText(), "Entrada"));
+
+    Button btnSaida = new Button("Registrar Saída");
+    btnSaida.setStyle("-fx-background-color: #E67E22; -fx-text-fill: white; -fx-font-size: 16; -fx-padding: 12 30; -fx-background-radius: 8;");
+    btnSaida.setPrefWidth(250);
+    btnSaida.setOnAction(e -> registrarAcesso(cbTipo.getValue(), tfId.getText(), tfNome.getText(), "Saída"));
+
+    Button btnBloquear = new Button("Bloquear Acesso");
+    btnBloquear.setStyle("-fx-background-color: #E74C3C; -fx-text-fill: white; -fx-font-size: 16; -fx-padding: 12 30; -fx-background-radius: 8;");
+    btnBloquear.setPrefWidth(250);
+    btnBloquear.setOnAction(e -> bloquear(tfId.getText()));
+
+    // Posicionamento
+    grid.add(lblTipo, 0, 1);
+    grid.add(cbTipo, 1, 1);
+    grid.add(lblId, 0, 2);
+    grid.add(tfId, 1, 2);
+    grid.add(lblNome, 0, 3);
+    grid.add(tfNome, 1, 3);
+
+    VBox boxBotoes = new VBox(15, btnEntrada, btnSaida, btnBloquear);
+    boxBotoes.setAlignment(Pos.CENTER);
+    grid.add(boxBotoes, 0, 4, 2, 1);
+
+    return grid;
+}
 
     private void registrarAcesso(String tipo, String idEntidade, String nomeModelo, String acesso) {
         if (idEntidade.isEmpty() || nomeModelo.isEmpty()) {
