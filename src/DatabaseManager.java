@@ -107,4 +107,29 @@ public class DatabaseManager {
             return false;
         }
     }
+
+    // Deletar um registro específico pelo ID
+    public void deletarRegistro(int id) {
+            String sql = "DELETE FROM registros WHERE id = ?";
+            try (Connection conn = DriverManager.getConnection(DB_URL);
+            PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, id);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+    }
+}
+
+    // Desbloquear (remover da tabela bloqueados)
+    public void desbloquear(String idEntidade) {
+            String sql = "DELETE FROM bloqueados WHERE id_entidade = ?";
+            try (Connection conn = DriverManager.getConnection(DB_URL);
+            PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, idEntidade);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+        e.printStackTrace();
+    }
+}
+
 }

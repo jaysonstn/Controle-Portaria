@@ -11,6 +11,7 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 
 
 public class ControlePortariaApp extends Application {
@@ -75,39 +76,120 @@ public class ControlePortariaApp extends Application {
     }
 
     private TableView<Registro> criarTabelaRegistros() {
-        TableView<Registro> table = new TableView<>();
-        table.setStyle("-fx-background-color: #ECF0F1; -fx-text-fill: #2C3E50;");
+    TableView<Registro> table = new TableView<>();
+    table.setStyle("-fx-background-color: #ECF0F1; -fx-text-fill: #2C3E50;");
 
-        TableColumn<Registro, String> colTipo = new TableColumn<>("Tipo");
-        colTipo.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(cellData.getValue().getTipoEntidade()));
+    TableColumn<Registro, String> colTipo = new TableColumn<>("Tipo");
+    colTipo.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(cellData.getValue().getTipoEntidade()));
 
-        TableColumn<Registro, String> colId = new TableColumn<>("ID/Placa");
-        colId.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(cellData.getValue().getIdEntidade()));
+    TableColumn<Registro, String> colId = new TableColumn<>("ID/Placa");
+    colId.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(cellData.getValue().getIdEntidade()));
 
-        TableColumn<Registro, String> colNome = new TableColumn<>("Nome/Modelo");
-        colNome.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(cellData.getValue().getNomeModelo()));
+    TableColumn<Registro, String> colNome = new TableColumn<>("Nome/Modelo");
+    colNome.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(cellData.getValue().getNomeModelo()));
 
-        TableColumn<Registro, String> colAcesso = new TableColumn<>("Acesso");
-        colAcesso.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(cellData.getValue().getTipoAcesso()));
+    TableColumn<Registro, String> colAcesso = new TableColumn<>("Acesso");
+    colAcesso.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(cellData.getValue().getTipoAcesso()));
 
-        TableColumn<Registro, String> colData = new TableColumn<>("Data/Hora");
-        colData.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(
-                cellData.getValue().getDataHora().format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))));
+    TableColumn<Registro, String> colData = new TableColumn<>("Data/Hora");
+    colData.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(
+            cellData.getValue().getDataHora().format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))));
 
-        table.getColumns().addAll(colTipo, colId, colNome, colAcesso, colData);
-        return table;
-    }
+    // Nova coluna: Excluir
+    TableColumn<Registro, Void> colExcluir = new TableColumn<>("Ação");
+    colExcluir.setMinWidth(100);
+    Callback<TableColumn<Registro, Void>, TableCell<Registro, Void>> cellFactory = new Callback<>() {
+        @Override
+        public TableCell<Registro, Void> call(final TableColumn<Registro, Void> param) {
+            return new TableCell<>() {
+                private final Button btnExcluir = new Button("Excluir");
 
-    private TableView<Bloqueado> criarTabelaBloqueados() {
-        TableView<Bloqueado> table = new TableView<>();
-        table.setStyle("-fx-background-color: #ECF0F1; -fx-text-fill: #2C3E50;");
+                {
+                    btnExcluir.setStyle("-fx-background-color: #E74C3C; -fx-text-fill: white; -fx-font-weight: bold;");
+                    btnExcluir.setOnAction(event -> {
+                        Registro registro = getTableView().getItems().get(getIndex());
+                        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                        alert.setTitle("Confirmação");
+                        alert.setHeaderText("Excluir registro?");
+                        alert.setContentText("Tem certeza que deseja excluir o registro de " +
+                                registro.getIdEntidade() + " (" + registro.getTipoAcesso() + ") ?");
 
-        TableColumn<Bloqueado, String> colId = new TableColumn<>("ID/Placa Bloqueado");
-        colId.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(cellData.getValue().getIdEntidade()));
+                        if (alert.showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK) {
+                            dbManager.deletarRegistro(registro.getId());
+                            registrosObs.remove(registro);
+                            showAlert("Registro excluído com sucesso!");
+                        }
+                    });
+                }
 
-        table.getColumns().add(colId);
-        return table;
-    }
+                @Override
+                protected void updateItem(Void item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty) {
+                        setGraphic(null);
+                    } else {
+                        setGraphic(btnExcluir);
+                    }
+                }
+            };
+        }
+    };
+    colExcluir.setCellFactory(cellFactory);
+
+    table.getColumns().addAll(colTipo, colId, colNome, colAcesso, colData, colExcluir);
+    return table;
+}
+
+   private TableView<Bloqueado> criarTabelaBloqueados() {
+    TableView<Bloqueado> table = new TableView<>();
+    table.setStyle("-fx-background-color: #ECF0F1; -fx-text-fill: #2C3E50;");
+
+    TableColumn<Bloqueado, String> colId = new TableColumn<>("ID/Placa Bloqueado");
+    colId.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(cellData.getValue().getIdEntidade()));
+
+    // Nova coluna: Desbloquear
+    TableColumn<Bloqueado, Void> colAcao = new TableColumn<>("Ação");
+    colAcao.setMinWidth(120);
+    Callback<TableColumn<Bloqueado, Void>, TableCell<Bloqueado, Void>> cellFactory = new Callback<>() {
+        @Override
+        public TableCell<Bloqueado, Void> call(final TableColumn<Bloqueado, Void> param) {
+            return new TableCell<>() {
+                private final Button btnDesbloquear = new Button("Desbloquear");
+
+                {
+                    btnDesbloquear.setStyle("-fx-background-color: #27AE60; -fx-text-fill: white; -fx-font-weight: bold;");
+                    btnDesbloquear.setOnAction(event -> {
+                        Bloqueado bloqueado = getTableView().getItems().get(getIndex());
+                        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                        alert.setTitle("Confirmação");
+                        alert.setHeaderText("Desbloquear?");
+                        alert.setContentText("Tem certeza que deseja desbloquear " + bloqueado.getIdEntidade() + "?");
+
+                        if (alert.showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK) {
+                            dbManager.desbloquear(bloqueado.getIdEntidade());
+                            bloqueadosObs.remove(bloqueado);
+                            showAlert("Desbloqueado com sucesso!");
+                        }
+                    });
+                }
+
+                @Override
+                protected void updateItem(Void item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty) {
+                        setGraphic(null);
+                    } else {
+                        setGraphic(btnDesbloquear);
+                    }
+                }
+            };
+        }
+    };
+    colAcao.setCellFactory(cellFactory);
+
+    table.getColumns().addAll(colId, colAcao);
+    return table;
+}
 
     private GridPane criarGridAcoes() {
         GridPane grid = new GridPane();
