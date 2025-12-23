@@ -1,3 +1,5 @@
+package br.com.portaria.model;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 

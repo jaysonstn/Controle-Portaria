@@ -1,3 +1,5 @@
+package br.com.portaria.model;
+
 public class Veiculo {
     private String placa;
     private String modelo;

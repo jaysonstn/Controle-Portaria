@@ -1,3 +1,5 @@
+package br.com.portaria.model;
+
 public class Bloqueado {
     private String idEntidade;
 

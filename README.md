@@ -6,21 +6,21 @@
 ### Getting Started
 
 
-Compilar na pasta src com:
+Compilar com:
 ``` 
-    javac --module-path ../lib/javafx-sdk-25.0.1/lib \
-      --add-modules javafx.controls,javafx.fxml,javafx.base \
-      -cp ".;../lib/sqlite-jdbc-3.51.1.0.jar" \
-      -d ../bin \
-      *.java
+    javac --module-path lib/javafx-sdk-25.0.1/lib \
+      --add-modules javafx.controls,javafx.fxml,javafx.base,javafx.graphics \
+      -cp ".;lib/sqlite-jdbc-3.51.1.0.jar" \
+      -d bin \
+      src/br/com/portaria/*.java src/br/com/portaria/model/*.java src/br/com/portaria/dao/*.java
 ```
 
-Rodar na raiz do projeto com:
+Rodar com:
 ```
     java --module-path lib/javafx-sdk-25.0.1/lib \
-     --add-modules javafx.controls,javafx.fxml,javafx.base \
+     --add-modules javafx.controls,javafx.fxml,javafx.base,javafx.graphics \
      -cp ".;lib/sqlite-jdbc-3.51.1.0.jar;bin" \
-     ControlePortariaApp
+     br.com.portaria.ControlePortariaApp
 ```
 
 ---

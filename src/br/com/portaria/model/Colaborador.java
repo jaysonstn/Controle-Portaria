@@ -1,3 +1,5 @@
+package br.com.portaria.model;
+
 public class Colaborador {
     private String id;
     private String nome;

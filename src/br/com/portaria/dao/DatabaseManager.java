@@ -1,3 +1,7 @@
+package br.com.portaria.dao;
+
+import br.com.portaria.model.Registro;
+import br.com.portaria.model.Bloqueado;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
